@@ -1,5 +1,8 @@
 package org.bigmouth.senon.commom.registry;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -40,5 +43,14 @@ public class Service implements Serializable {
 
     public void setRegisterTime(Date registerTime) {
         this.registerTime = registerTime;
+    }
+
+    public String getHostNameForHttpProtocol() {
+        return new StringBuilder().append("http://").append(getHost()).append(":").append(getPort()).toString();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

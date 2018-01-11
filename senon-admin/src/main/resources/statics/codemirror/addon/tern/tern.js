@@ -31,13 +31,13 @@
 //   will be applied to the Tern responses before treating them
 //
 //
-// It is possible to run the Tern server in a web worker by specifying
+// It is possible to run the Tern server in a web scheduler by specifying
 // these additional options:
-// * useWorker: Set to true to enable web worker mode. You'll probably
+// * useWorker: Set to true to enable web scheduler mode. You'll probably
 //   want to feature detect the actual value you use here, for example
 //   !!window.Worker.
-// * workerScript: The main script of the worker. Point this to
-//   wherever you are hosting worker.js from this directory.
+// * workerScript: The main script of the scheduler. Point this to
+//   wherever you are hosting scheduler.js from this directory.
 // * workerDeps: An array of paths pointing (relative to workerScript)
 //   to the Acorn and Tern libraries and any Tern plugins you want to
 //   load. Or, if you minified those into a single script and included

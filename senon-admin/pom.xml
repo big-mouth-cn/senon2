@@ -14,8 +14,8 @@
     <dependencies>
         <dependency>
             <groupId>org.bigmouth.senon</groupId>
-            <artifactId>senon-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>senon-spring</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>

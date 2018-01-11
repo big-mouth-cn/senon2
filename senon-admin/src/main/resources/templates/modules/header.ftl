@@ -39,6 +39,9 @@
         width: 33px;
         height: 33px;
     }
+    .ztree {font-family: "Consolas"}
+    .ztree li span.button.parent_ico_open, .ztree li span.button.parent_ico_close{margin-right:2px; background: url(${ctx.contextPath}/css/zTreeStyle/img/diy/3.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}
+    .ztree li span.button.custom_ico_docu{margin-right:2px; background: url(${ctx.contextPath}/css/zTreeStyle/img/diy/3.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}
 </style>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>

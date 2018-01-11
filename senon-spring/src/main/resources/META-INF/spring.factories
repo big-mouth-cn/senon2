@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.bigmouth.senon.spring.zk.ZkAutoConfiguration,\
+  org.bigmouth.senon.spring.registry.zk.ZooKeeperRegistryAutoConfiguration,\
+  org.bigmouth.senon.spring.selector.RandomSelectorAutoConfiguration

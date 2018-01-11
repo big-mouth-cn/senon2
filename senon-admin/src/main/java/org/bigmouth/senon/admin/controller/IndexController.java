@@ -13,7 +13,7 @@ public class IndexController {
     }
 
 
-    @RequestMapping("/worker_manage")
+    @RequestMapping("/worker")
     public String workers() {
         return "worker";
     }

@@ -88,7 +88,7 @@
       suppressEdits: false, // used to disable editing during key handlers when in readOnly mode
       pasteIncoming: false, cutIncoming: false, // help recognize paste/cut edits in readInput
       draggingText: false,
-      highlight: new Delayed() // stores highlight worker timeout
+      highlight: new Delayed() // stores highlight scheduler timeout
     };
 
     // Override magic textarea content restore that IE sometimes does
@@ -3489,7 +3489,7 @@
       if (recomputeMaxLength) cm.curOp.updateMaxLine = true;
     }
 
-    // Adjust frontier, schedule worker
+    // Adjust frontier, schedule scheduler
     doc.frontier = Math.min(doc.frontier, from.line);
     startWorker(cm, 400);
 

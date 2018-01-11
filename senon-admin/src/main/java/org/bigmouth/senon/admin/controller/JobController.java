@@ -1,8 +1,13 @@
 package org.bigmouth.senon.admin.controller;
 
+import org.apache.commons.collections.MapUtils;
 import org.bigmouth.senon.admin.convert.CaseInsensitiveConverter;
 import org.bigmouth.senon.admin.service.JobService;
 import org.bigmouth.senon.commom.model.*;
+import org.bigmouth.senon.commom.registry.SchedulerRegistry;
+import org.bigmouth.senon.commom.registry.Service;
+import org.bigmouth.senon.commom.scheduler.Scheduler;
+import org.bigmouth.senon.commom.selector.Selector;
 import org.bigmouth.senon.commom.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +32,12 @@ public class JobController {
 	@Autowired
 	private JobService jobService;
 
-	@Value("${scheduler.trigger_job.url}")
-	private String scheduler_trigger_job_url;
-	@Value("${scheduler.get_log.url}")
-	private String scheduler_get_log_url;
-	@Value("${scheduler.manual_run_job.url}")
-	private String scheduler_manual_run_job_url;
-	@Value("${scheduler.resume_run_job.url}")
-	private String scheduler_resume_run_job_url;
-
 	private RestTemplate restTemplate = new RestTemplate();
+
+	@Autowired
+	private SchedulerRegistry schedulerRegistry;
+	@Autowired
+	private Selector selector;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -57,7 +58,6 @@ public class JobController {
 	@RequestMapping(value = "get_by_file_id")
 	@ResponseBody
 	public JobEntity get_by_file_id(Long fileId) {
-		logger.info("get file by id : {}", fileId);
 		return jobService.getByFileId(fileId);
 	}
 
@@ -108,9 +108,14 @@ public class JobController {
 		try {
 			MultiValueMap<String, Long> params = new LinkedMultiValueMap<String, Long>();
 			params.add("jobId", jobId);
-			Map<String, Object> rs = restTemplate.postForObject(
-					scheduler_trigger_job_url, params, Map.class);
-			if ((Boolean) rs.get("op_result") == true) {
+
+			Scheduler service = getScheduler();
+			if (null == service) {
+				return CommonResponse.FAILED("Could not found any scheduler service!");
+			}
+			Map<String, Object> rs = restTemplate.postForObject(service.getUrl(Scheduler.URI_TRIGGER_JOB), params, Map.class);
+
+			if (MapUtils.isNotEmpty(rs) && (Boolean) rs.get("op_result") == true) {
 				return CommonResponse.SUCCESS((String) rs.get("job_status"));
 			} else {
 				return CommonResponse.FAILED((String) rs.get("job_status"));
@@ -126,7 +131,12 @@ public class JobController {
 		try {
 			MultiValueMap<String, Long> params = new LinkedMultiValueMap<String, Long>();
 			params.add("jobId", jobId);
-			return restTemplate.postForObject(scheduler_manual_run_job_url,
+
+			Scheduler service = getScheduler();
+			if (null == service) {
+				return CommonResponse.FAILED("Could not found any scheduler service!");
+			}
+			return restTemplate.postForObject(service.getUrl(Scheduler.URI_MANUAL_RUN_JOB),
 					params, CommonResponse.class);
 		} catch (Exception e) {
 			return CommonResponse.FAILED(e.getMessage());
@@ -139,7 +149,11 @@ public class JobController {
 		try {
 			MultiValueMap<String, Long> params = new LinkedMultiValueMap<String, Long>();
 			params.add("jobId", jobId);
-			return restTemplate.postForObject(scheduler_resume_run_job_url,
+			Scheduler service = getScheduler();
+			if (null == service) {
+				return CommonResponse.FAILED("Could not found any scheduler service!");
+			}
+			return restTemplate.postForObject(service.getUrl(Scheduler.URI_RESUME_RUN_JOB),
 					params, CommonResponse.class);
 		} catch (Exception e) {
 			return CommonResponse.FAILED(e.getMessage());
@@ -150,8 +164,12 @@ public class JobController {
 	public @ResponseBody LogStatus gethistorylog(Long historyId) {
 		MultiValueMap<String, Long> params = new LinkedMultiValueMap<String, Long>();
 		params.add("logId", historyId);
+		Scheduler service = getScheduler();
+		if (null == service) {
+			return new LogStatus("ERROR", "Could not found any scheduler service!");
+		}
 		return restTemplate.postForObject(
-				scheduler_get_log_url, params,
+				service.getUrl(Scheduler.URI_GET_LOG), params,
 				LogStatus.class);
 	}
 
@@ -217,6 +235,11 @@ public class JobController {
 				}
 			}
 		}
+	}
+
+	private Scheduler getScheduler() {
+		List<Scheduler> services = schedulerRegistry.getServices();
+		return selector.select(services);
 	}
 
 }

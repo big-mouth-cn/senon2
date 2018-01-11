@@ -13,6 +13,7 @@
         <module>senon-scheduler</module>
         <module>senon-worker</module>
         <module>senon-admin</module>
+        <module>senon-spring</module>
     </modules>
 
     <parent>

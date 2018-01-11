@@ -5,4 +5,3 @@
 <script src="${ctx.contextPath }/js/common_need.js"></script>
 <script src="${ctx.contextPath }/js/common.utils.js"></script>
 <script src="${ctx.contextPath }/bootstrap/js/vendor/holder.js"></script>
-<script src="${ctx.contextPath }/bootstrap/js/ie10-viewport-bug-workaround.js"></script>
